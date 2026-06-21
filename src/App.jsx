@@ -223,13 +223,13 @@ function Contact() {
           the right fix — then build it if it is.
         </p>
         <div className="contact-links">
-          <a href="mailto:hello@example.com" className="btn btn-primary">
+          <a href="oladimeji.automation@gmail.com" className="btn btn-primary">
             Email me
           </a>
           <a href="https://linkedin.com" className="btn btn-ghost">
             LinkedIn
           </a>
-          <a href="https://x.com" className="btn btn-ghost">
+          <a href="https://x.com/Oladmeji_i" className="btn btn-ghost">
             X / Twitter
           </a>
         </div>
