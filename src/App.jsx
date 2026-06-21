@@ -232,6 +232,7 @@ function Contact() {
           <a href="https://x.com/Oladmeji_i" className="btn btn-ghost">
             X / Twitter
           </a>
+          {/* gvghvcgvkhvhvbbhjbjhfdbyuldfgbyulfbluffblfbgylbgubgbg */}
         </div>
       </Reveal>
     </section>

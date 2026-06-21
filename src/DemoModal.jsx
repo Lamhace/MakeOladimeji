@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 
 export default function DemoModal({ project, onClose }) {
   const [step, setStep] = useState(-1);
-  const [playing, setPlaying] = useState(false);
   const [videoError, setVideoError] = useState(false);
-  const timerRef = useRef(null);
+  const videoRef = useRef(null);
   const closeBtnRef = useRef(null);
+  const rafRef = useRef(null);
 
   useEffect(() => {
     closeBtnRef.current?.focus();
@@ -16,33 +16,59 @@ export default function DemoModal({ project, onClose }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // Try to autoplay the moment the modal opens. Most browsers allow
+  // autoplay only when muted, so we start muted and let the user unmute
+  // with the native video controls if they want sound.
   useEffect(() => {
-    return () => clearTimeout(timerRef.current);
-  }, []);
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+  }, [project.videoSrc]);
 
-  function play() {
-    setPlaying(true);
-    setStep(0);
-    advance(0);
-  }
+  // Drive the simulation steps off real video playback time, so the
+  // "simulated flow" panel advances in step with what's happening on
+  // screen instead of running on its own separate timer.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || videoError) return;
 
-  function advance(i) {
-    timerRef.current = setTimeout(() => {
-      if (i + 1 < project.flow.length) {
-        setStep(i + 1);
-        advance(i + 1);
-      } else {
-        setPlaying(false);
+    function tick() {
+      if (v.duration && !isNaN(v.duration)) {
+        const progress = v.currentTime / v.duration;
+        const total = project.flow.length;
+        const idx = Math.min(total - 1, Math.floor(progress * total));
+        setStep(idx);
       }
-    }, 1400);
+      rafRef.current = requestAnimationFrame(tick);
+    }
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [project.flow.length, videoError]);
+
+  function replaySimulation() {
+    const v = videoRef.current;
+    if (v && !videoError) {
+      v.currentTime = 0;
+      v.muted = true;
+      v.play().catch(() => {});
+    } else {
+      // No video available — just step through manually on a timer.
+      setStep(0);
+      let i = 0;
+      const id = setInterval(() => {
+        i += 1;
+        if (i >= project.flow.length) {
+          clearInterval(id);
+        } else {
+          setStep(i);
+        }
+      }, 1300);
+    }
   }
 
-  function replay() {
-    clearTimeout(timerRef.current);
-    play();
-  }
-
-  const finished = !playing && step === project.flow.length - 1;
+  const finished = step === project.flow.length - 1;
 
   return (
     <div
@@ -57,12 +83,17 @@ export default function DemoModal({ project, onClose }) {
             <div id="demo-title" className="modal-title">
               {project.title}
             </div>
-            <div className="modal-sub">Demo recording + simulated flow</div>
+            <div className="modal-sub">Demo recording + live flow simulation</div>
           </div>
           <button className="modal-close" onClick={onClose} ref={closeBtnRef} aria-label="Close demo">
             &#x2715;
           </button>
         </div>
+
+        {/* ---- Plain-words description, read before watching ---- */}
+        {project.videoDescription && (
+          <p className="demo-description">{project.videoDescription}</p>
+        )}
 
         {/* ---- Real video demo ---- */}
         <div className="demo-section-label">Recorded demo</div>
@@ -70,7 +101,11 @@ export default function DemoModal({ project, onClose }) {
           {!videoError && project.videoSrc ? (
             <video
               key={project.videoSrc}
+              ref={videoRef}
               controls
+              autoPlay
+              muted
+              playsInline
               preload="metadata"
               className="video-el"
               onError={() => setVideoError(true)}
@@ -85,7 +120,7 @@ export default function DemoModal({ project, onClose }) {
           )}
         </div>
 
-        {/* ---- Simulated flow run ---- */}
+        {/* ---- Simulated flow run, synced to video progress ---- */}
         <div className="demo-section-label">Simulated flow</div>
         <div className="demo-stage">
           <div className="demo-flow">
@@ -105,22 +140,15 @@ export default function DemoModal({ project, onClose }) {
             ))}
           </div>
           <div className="demo-caption">
-            {step === -1 && "Press play to watch the flow run, step by step."}
+            {step === -1 && "The flow lights up automatically as the video plays."}
             {step >= 0 && project.flow[step]?.caption}
           </div>
         </div>
 
         <div className="demo-controls">
-          {step === -1 && (
-            <button className="btn btn-primary" onClick={play}>
-              &#9654; Play simulation
-            </button>
-          )}
-          {step !== -1 && (
-            <button className="btn btn-ghost" onClick={replay}>
-              &#8635; Replay
-            </button>
-          )}
+          <button className="btn btn-ghost" onClick={replaySimulation}>
+            &#8635; Replay from start
+          </button>
           <button className="btn btn-ghost" onClick={onClose}>
             Close
           </button>
