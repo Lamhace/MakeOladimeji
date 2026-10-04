@@ -16,10 +16,9 @@ export default function DemoModal({ project, onClose }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  // Try to autoplay the moment the modal opens. Most browsers allow
-  // autoplay only when muted, so we start muted and let the user unmute
-  // with the native video controls if they want sound.
   useEffect(() => {
+    setVideoError(false);
+    setStep(-1);
     const v = videoRef.current;
     if (!v) return;
     v.muted = true;
@@ -27,9 +26,24 @@ export default function DemoModal({ project, onClose }) {
     tryPlay();
   }, [project.videoSrc]);
 
-  // Drive the simulation steps off real video playback time, so the
-  // "simulated flow" panel advances in step with what's happening on
-  // screen instead of running on its own separate timer.
+  // If video is unavailable or errors, automatically trigger the animated step simulation
+  useEffect(() => {
+    if (videoError || !project.videoSrc) {
+      setStep(0);
+      let i = 0;
+      const id = setInterval(() => {
+        i += 1;
+        if (i >= project.flow.length) {
+          clearInterval(id);
+        } else {
+          setStep(i);
+        }
+      }, 1400);
+      return () => clearInterval(id);
+    }
+  }, [videoError, project.videoSrc, project.flow.length]);
+
+  // Drive the simulation steps off real video playback time
   useEffect(() => {
     const v = videoRef.current;
     if (!v || videoError) return;
@@ -54,7 +68,6 @@ export default function DemoModal({ project, onClose }) {
       v.muted = true;
       v.play().catch(() => {});
     } else {
-      // No video available — just step through manually on a timer.
       setStep(0);
       let i = 0;
       const id = setInterval(() => {
@@ -64,7 +77,7 @@ export default function DemoModal({ project, onClose }) {
         } else {
           setStep(i);
         }
-      }, 1300);
+      }, 1400);
     }
   }
 
@@ -83,7 +96,7 @@ export default function DemoModal({ project, onClose }) {
             <div id="demo-title" className="modal-title">
               {project.title}
             </div>
-            <div className="modal-sub">Demo recording + live flow simulation</div>
+            <div className="modal-sub">Architecture Demo + Live Pipeline Simulation</div>
           </div>
           <button className="modal-close" onClick={onClose} ref={closeBtnRef} aria-label="Close demo">
             &#x2715;
@@ -96,7 +109,7 @@ export default function DemoModal({ project, onClose }) {
         )}
 
         {/* ---- Real video demo ---- */}
-        <div className="demo-section-label">Recorded demo</div>
+        <div className="demo-section-label">Recorded Demo / Architecture Canvas</div>
         <div className="video-frame">
           {!videoError && project.videoSrc ? (
             <video
@@ -115,13 +128,13 @@ export default function DemoModal({ project, onClose }) {
           ) : (
             <div className="video-placeholder">
               <span className="video-placeholder-icon">&#127909;</span>
-              <span>Demo video coming soon</span>
+              <span>Interactive Architecture Simulation Active</span>
             </div>
           )}
         </div>
 
         {/* ---- Simulated flow run, synced to video progress ---- */}
-        <div className="demo-section-label">Simulated flow</div>
+        <div className="demo-section-label">Pipeline Execution Simulation</div>
         <div className="demo-stage">
           <div className="demo-flow">
             {project.flow.map((node, i) => (
@@ -140,14 +153,14 @@ export default function DemoModal({ project, onClose }) {
             ))}
           </div>
           <div className="demo-caption">
-            {step === -1 && "The flow lights up automatically as the video plays."}
+            {step === -1 && "The pipeline lights up automatically as data traverses modules."}
             {step >= 0 && project.flow[step]?.caption}
           </div>
         </div>
 
         <div className="demo-controls">
           <button className="btn btn-ghost" onClick={replaySimulation}>
-            &#8635; Replay from start
+            &#8635; Replay pipeline run
           </button>
           <button className="btn btn-ghost" onClick={onClose}>
             Close

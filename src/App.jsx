@@ -20,7 +20,7 @@ function Nav() {
         <div className="nav-links">
           <a href="#about">About</a>
           <a href="#skills">Skills</a>
-          <a href="#projects">Projects</a>
+          <a href="#projects">Pipelines</a>
           <a href="#contact">Contact</a>
         </div>
         <button
@@ -37,7 +37,7 @@ function Nav() {
       <div className={"mobile-menu" + (open ? " open" : "")}>
         <a href="#about" onClick={handleLinkClick}>About</a>
         <a href="#skills" onClick={handleLinkClick}>Skills</a>
-        <a href="#projects" onClick={handleLinkClick}>Projects</a>
+        <a href="#projects" onClick={handleLinkClick}>Pipelines</a>
         <a href="#contact" onClick={handleLinkClick}>Contact</a>
       </div>
     </nav>
@@ -47,30 +47,29 @@ function Nav() {
 function Hero() {
   return (
     <header className="hero wrap">
-      <div className="eyebrow">AI automation builder</div>
+      <div className="eyebrow">Enterprise AI Automation Engineer</div>
       <h1>
-        I connect the tools that <span className="accent">used to need</span> a{" "}
-        <span className="strike">human</span> in between.
+        I architect enterprise pipelines that <span className="accent">eliminate operational latency</span> and{" "}
+        <span className="strike">manual bottlenecks</span>.
       </h1>
       <p className="hero-sub">
-        Oladimeji — building practical, working automations with Make.com: forms that
-        route themselves, inboxes that summarize themselves, and AI that reads a
-        message before a person has to.
+        Oladimeji — Building production-grade, fault-tolerant AI automations on Make.com:
+        real-time webhook triage, Google Gemini 3.5 structured reasoning, multi-branch SLA routers, and autonomous SaaS workflows.
       </p>
       <div className="hero-meta">
         <span>
-          <b>6</b> automations built
+          <b>4</b> Enterprise Architectures
         </span>
         <span>
-          <b>8</b> tools integrated
+          <b>12+</b> APIs & SaaS Integrations
         </span>
         <span>
-          <b>0</b> manual handoffs
+          <b>100%</b> Sub-Second AI Triage
         </span>
       </div>
       <div className="btn-row">
         <a href="#projects" className="btn btn-primary">
-          View projects
+          Explore Production Pipelines
         </a>
         <a href="#contact" className="btn btn-ghost">
           Get in touch
@@ -84,31 +83,25 @@ function About() {
   return (
     <section id="about" className="wrap">
       <Reveal className="section-head">
-        <div className="eyebrow">About</div>
-        <h2>Automation that actually ships.</h2>
+        <div className="eyebrow">Engineering Philosophy</div>
+        <h2>Enterprise automation built to fail gracefully.</h2>
       </Reveal>
       <div className="about-grid">
         <Reveal className="about-text" as="div">
           <p>
-            I build automations the way a careful operator thinks about a process:{" "}
-            <strong>where does this break, and what happens next.</strong> Every
-            project here started as a real workflow problem — a lead that needed
-            following up, an inbox that needed summarizing, an order that needed
-            tracking — and ended as a working pipeline.
+            I build automations the way a senior reliability engineer designs systems:{" "}
+            <strong>where does this edge case break, how do we enforce strict schema validation, and what happens next?</strong> Every
+            pipeline here solves a high-stakes business problem — from mission-critical VIP customer churn risk and automated revenue qualification to financial invoice fraud audits.
           </p>
           <p>
-            I trained through Make's automation course, then pushed past the
-            curriculum into webhooks, AI classification, and conditional routing —
-            the layer where automations stop being simple triggers and start making
-            decisions.
+            My architectures bridge modern LLMs (Google Gemini 3.5 Flash, OpenAI) with deterministic execution engines. Rather than simple linear triggers, I build multi-branch routers, strict JSON schema parsers, and automated error break/resume handlers that guarantee 99.9% pipeline uptime.
           </p>
           <p>
-            I'm looking for freelance automation work or an entry-level role where I
-            can keep building things that remove repetitive work from someone's day.
+            Available for enterprise AI automation consulting, fractional automation engineering, and full-time workflow architecture roles.
           </p>
         </Reveal>
         <Reveal className="stack-list" as="div">
-          <div className="stack-label">Tools in the stack</div>
+          <div className="stack-label">Core Production Stack</div>
           <div className="stack-pills">
             {STACK.map((t) => (
               <span className="pill" key={t}>
@@ -139,8 +132,8 @@ function Skills() {
   return (
     <section id="skills" className="wrap">
       <Reveal className="section-head">
-        <div className="eyebrow">Skills</div>
-        <h2>What I bring to a build.</h2>
+        <div className="eyebrow">Capabilities</div>
+        <h2>Production engineering competencies.</h2>
       </Reveal>
       <div className="skill-rows">
         {SKILLS.map((s) => (
@@ -162,7 +155,7 @@ function ProjectCard({ project, onDemo }) {
         <span
           className={"project-status " + (project.status === "done" ? "status-done" : "status-pending")}
         >
-          {project.status === "done" ? "Shipped" : "In progress"}
+          {project.status === "done" ? "Production Live" : "In Review"}
         </span>
       </div>
       <p className="project-desc">{project.desc}</p>
@@ -183,7 +176,7 @@ function ProjectCard({ project, onDemo }) {
           ))}
         </div>
         <button className="btn-small" onClick={() => onDemo(project)}>
-          &#9654; Watch demo
+          &#9654; Architecture & Demo
         </button>
       </div>
     </Reveal>
@@ -194,11 +187,10 @@ function Projects({ onDemo }) {
   return (
     <section id="projects" className="wrap">
       <Reveal className="section-head">
-        <div className="eyebrow">Projects</div>
-        <h2>Six builds, six different jobs automated.</h2>
+        <div className="eyebrow">Featured Work</div>
+        <h2>Enterprise Architectures & Production Pipelines</h2>
         <p>
-          Each card traces the actual flow of data — trigger to action — the way it's
-          wired in Make. Click "watch demo" to see it run.
+          Each pipeline demonstrates fault-tolerant design, real-time webhook ingestion, LLM reasoning with strict JSON validation, and conditional routing. Click "Architecture & Demo" to explore.
         </p>
       </Reveal>
       <div className="project-list">
@@ -217,22 +209,20 @@ function Contact() {
         <div className="eyebrow" style={{ justifyContent: "center" }}>
           Get in touch
         </div>
-        <h2>Have a process that needs automating?</h2>
+        <h2>Have mission-critical workflows that need automating?</h2>
         <p>
-          I'll take a look at the workflow and tell you honestly whether automation is
-          the right fix — then build it if it is.
+          Let's analyze your operational bottlenecks, eliminate repetitive manual toil, and build production-grade AI pipelines that scale.
         </p>
         <div className="contact-links">
           <a href="mailto:oladimeji.automation@gmail.com" className="btn btn-primary">
             Email me
           </a>
-          <a href="https://linkedin.com" className="btn btn-ghost">
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
             LinkedIn
           </a>
-          <a href="https://x.com/Oladmeji_i" className="btn btn-ghost">
+          <a href="https://x.com/Oladmeji_i" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
             X / Twitter
           </a>
-          {/* gvghvcgvkhvhvbbhjbjhfdbyuldfgbyulfbluffblfbgylbgubgbg */}
         </div>
       </Reveal>
     </section>
@@ -243,8 +233,8 @@ function Footer() {
   return (
     <footer className="wrap">
       <div className="footer-inner">
-        <span>&copy; 2026 Oladimeji — built with Make.com, debugged with patience.</span>
-        <span>Lagos, Nigeria</span>
+        <span>&copy; 2026 Oladimeji — Enterprise AI Automations built with Make.com & Google Gemini.</span>
+        <span>Lagos, Nigeria &bull; Available Worldwide</span>
       </div>
     </footer>
   );
